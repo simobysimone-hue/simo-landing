@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#101012">
-  <meta name="description" content="SIMO · Taller creativo en Madrid. Crea tu propio SIMO en 3 horas, sin experiencia. Reserva tu plaza.">
+  <meta name="description" content="SIMO · Taller creativo en Madrid. Dos talleres: Crea tu SIMO (4 h) o Customiza tu SIMO (2 h 30 min), sin experiencia. Reserva tu plaza.">
   <title>SIMO · Reserva tu plaza en el taller</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23101012'/%3E%3Ctext x='14' y='48' fill='%23f0ede8' font-family='Arial,sans-serif' font-size='50' font-weight='700'%3ES%3C/text%3E%3Ccircle cx='50' cy='14' r='7' fill='none' stroke='%23c9ccd1' stroke-width='3'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -27,7 +27,7 @@
       <div class="hero-copy">
         <p class="eyebrow"><span class="stud" aria-hidden="true"></span> TALLER CREATIVO · MADRID</p>
         <h1>Tu <em>SIMO.</em><br>Hecho por ti.</h1>
-        <p class="hero-lead">Tres horas, una máquina de coser y cero experiencia necesaria. Sal con un SIMO 100% tuyo, 100% único.</p>
+        <p class="hero-lead">Cóselo desde cero o customízalo a tu manera. Cero experiencia necesaria. Sal con un SIMO 100% tuyo, 100% único.</p>
         <div class="hero-actions">
           <a class="btn btn-red" href="#reservar">Reservar mi plaza</a>
           <a class="btn btn-ghost" href="#taller">Cómo funciona</a>
@@ -49,17 +49,35 @@
       <p class="eyebrow"><span class="stud" aria-hidden="true"></span> 01 / EL TALLER</p>
       <h2 class="display">Cómo funciona</h2>
       <div class="facts">
-        <div><b>3 h</b><span>para desconectar</span></div>
-        <div><b>8</b><span>personas por taller</span></div>
+        <div><b>2</b><span>talleres para elegir</span></div>
+        <div><b>4 h · 2 h 30</b><span>Crea tu SIMO · Customiza tu SIMO</span></div>
         <div><b>0</b><span>experiencia necesaria</span></div>
         <div><b>1</b><span>bolso terminado, ese mismo día</span></div>
       </div>
+      <div class="modes">
+        <article class="mode">
+          <p class="mode-tag">Sábados · 10:00–14:00</p>
+          <h3>Crea tu SIMO</h3>
+          <p>Coses tu propio SIMO desde cero con la máquina, acompañada en cada paso. Antes del taller eliges las telas de la tapa y de la base.</p>
+          <ul class="mode-facts"><li><b>4 h</b> de taller</li><li>Grupos de <b>8</b></li><li><b>74,99 €</b> por persona</li></ul>
+          <p class="mode-inc">Incluye todos los materiales, máquinas, guías y patrones, además de vino ilimitado y picoteo.</p>
+          <a class="btn btn-red" href="#reservar" data-reservar="crea">Reservar Crea tu SIMO</a>
+        </article>
+        <article class="mode">
+          <p class="mode-tag">Viernes y sábados · 17:00–19:30</p>
+          <h3>Customiza tu SIMO</h3>
+          <p>Elige tu bolso base y hazlo 100 % tuyo: flecos, lentejuelas, tachuelas, pegatinas, cintas… En 2 horas y media sales con un SIMO que no tiene nadie más.</p>
+          <ul class="mode-facts"><li><b>2 h 30 min</b> de taller</li><li>Grupos de <b>20</b></li><li><b>54,99 €</b> por persona</li></ul>
+          <p class="mode-inc">Incluye todos los materiales necesarios, además de vino ilimitado y picoteo.</p>
+          <a class="btn btn-red" href="#reservar" data-reservar="customiza">Reservar Customiza tu SIMO</a>
+        </article>
+      </div>
       <ol class="steps">
-        <li><span class="step-n">01</span><h3>Elige tus materiales</h3><p>Elige tus materiales y haz tu bolso a tu gusto. Tamaños, telas, tachuelas, flecos, cuerdas…</p></li>
-        <li><span class="step-n">02</span><h3>Crea tu SIMO</h3><p>Crea tu propio SIMO acompañado en cada paso.</p></li>
+        <li><span class="step-n">01</span><h3>Elige tu taller</h3><p>Crea tu SIMO desde cero o customiza tu bolso base. Telas, tachuelas, flecos, cintas…</p></li>
+        <li><span class="step-n">02</span><h3>Hazlo tuyo</h3><p>Cose o customiza tu SIMO acompañada en cada paso.</p></li>
         <li><span class="step-n">03</span><h3>Sal estrenando</h3><p>Llévate tu SIMO a casa.</p></li>
       </ol>
-      <p class="included"><strong>El taller incluye</strong> todos los materiales, máquinas, guías, patrones… necesarios. Además de vino ilimitado y picoteo. Tú solo tienes que traer las ganas.<br><strong>Dónde:</strong> Casa de las Alajas · C/ Hileras 18, Madrid (centro).</p>
+      <p class="included"><strong>Dónde:</strong> Casa de las Alajas, Madrid (centro). Los <strong>viernes</strong> se entra por <strong>C/ Hileras 18</strong> y los <strong>sábados</strong> (mañana y tarde) por <strong>C/ San Martín 5</strong>. Tú solo tienes que traer las ganas.</p>
     </section>
 
     <section class="section gallery" id="inspo">
@@ -80,8 +98,16 @@
       <h2 class="display">Guardaos<br><em>un rato.</em></h2>
 
       <form id="booking-form" class="booking-form">
+        <fieldset class="mode-field">
+          <legend>Elige tu taller</legend>
+          <div class="mode-picker">
+            <label><input type="radio" name="modalidad" value="crea" checked><span><b>Crea tu SIMO</b><small>Sábados 10:00–14:00 · 4 h · 74,99 €</small></span></label>
+            <label><input type="radio" name="modalidad" value="customiza"><span><b>Customiza tu SIMO</b><small>Viernes y sábados 17:00–19:30 · 2 h 30 min · 54,99 €</small></span></label>
+          </div>
+        </fieldset>
+
         <fieldset class="date-field">
-          <legend>Elige tu sesión</legend>
+          <legend>Elige tu día</legend>
           <div class="calendar">
             <div class="month-control">
               <button type="button" id="prev-month" aria-label="Mes anterior">‹</button>
@@ -90,7 +116,7 @@
             </div>
             <div class="weekdays" aria-hidden="true"><span>L</span><span>M</span><span>X</span><span>J</span><span>V</span><span>S</span><span>D</span></div>
             <div class="calendar-days" id="calendar-days"></div>
-            <p class="calendar-legend"><span class="legend-dot"></span> Talleres: viernes y sábados, 17:00–20:00 · Casa de las Alajas, Hileras 18</p>
+            <p class="calendar-legend"><span class="legend-dot"></span> <span id="legend-text">Crea tu SIMO: sábados de 10:00 a 14:00 · grupos de 8</span></p>
           </div>
           <input type="hidden" id="session-date" name="session">
           <p class="date-selection" id="date-selection">Elige un día marcado en el calendario.</p>
@@ -103,17 +129,10 @@
               <button type="button" id="people-minus" aria-label="Quitar una persona">−</button>
               <select id="people" name="people">
                 <option value="1">1 persona</option>
-                <option value="2">2 personas</option>
-                <option value="3">3 personas</option>
-                <option value="4">4 personas</option>
-                <option value="5">5 personas</option>
-                <option value="6">6 personas</option>
-                <option value="7">7 personas</option>
-                <option value="8">8 personas</option>
               </select>
               <button type="button" id="people-plus" aria-label="Añadir una persona">+</button>
             </label>
-            <p class="total"><span>Total</span><strong id="total">54,99 €</strong></p>
+            <p class="total"><span>Total</span><strong id="total">74,99 €</strong></p>
           </div>
           <p class="spots-note" id="spots-note" hidden></p>
         </fieldset>
@@ -126,7 +145,7 @@
           </div>
         </fieldset>
 
-        <button type="submit" class="btn btn-red btn-block" id="pay-button">Reservar y pagar · <span id="pay-total">54,99 €</span></button>
+        <button type="submit" class="btn btn-red btn-block" id="pay-button"><span>Reservar y pagar ·</span> <span id="pay-total">74,99 €</span></button>
         <p class="pay-note" id="pay-note">Pago seguro con tarjeta o Bizum. Recibiréis la confirmación por email.</p>
       </form>
     </section>
@@ -135,10 +154,23 @@
       <p class="eyebrow"><span class="stud" aria-hidden="true"></span> 04 / POR SI ACASO</p>
       <h2 class="display">¿Dudas?<br><em>Mirad aquí.</em></h2>
       <details><summary>¿Tengo que saber coser?</summary><p>No. Empezamos de cero y os guiamos con la máquina, el patrón y cada costura.</p></details>
+      <details><summary>¿Qué diferencia hay entre los dos talleres?</summary><p>En <strong>Crea tu SIMO</strong> coses tu bolso desde cero con la máquina (4 horas). En <strong>Customiza tu SIMO</strong> partes de un bolso base y lo decoras a tu gusto con flecos, lentejuelas, tachuelas, pegatinas y cintas (2 horas y media).</p></details>
       <details><summary>¿Me llevo el bolso ese día?</summary><p>Sí. Salís con vuestro SIMO terminado y listo para estrenar.</p></details>
-      <details><summary>¿Puedo venir sola?</summary><p>Claro. El grupo son 8 personas máximo y la mesa se comparte. También podéis venir en grupo.</p></details>
-      <details><summary>¿Qué incluye los 54,99 €?</summary><p>Tres horas de taller guiado, todos los materiales, máquinas, guías y patrones, además de vino ilimitado y picoteo. Y vuestro SIMO terminado.</p></details>
-      <details><summary>¿Y si necesito cancelar?</summary><p>Escribidnos con 48 h de antelación y os movemos la plaza a otra fecha sin coste.</p></details>
+      <details><summary>¿Puedo venir sola?</summary><p>Claro. En Crea tu SIMO el grupo es de 8 personas como máximo y en Customiza tu SIMO, de 20. La mesa se comparte. También podéis venir en grupo, o reservar el taller entero.</p></details>
+      <details><summary>¿Qué incluye el precio?</summary><p><strong>Crea tu SIMO (74,99 €):</strong> cuatro horas de taller guiado, todos los materiales, máquinas, guías y patrones, además de vino ilimitado y picoteo. Y vuestro SIMO terminado.</p><p><strong>Customiza tu SIMO (54,99 €):</strong> dos horas y media de taller y todos los materiales necesarios, además de vino ilimitado y picoteo. Y vuestro SIMO terminado.</p></details>
+      <details><summary>¿Por dónde se entra?</summary><p>Es en la Casa de las Alajas (Madrid centro). Los viernes se entra por C/ Hileras 18 y los sábados, por C/ San Martín 5.</p></details>
+      <details>
+        <summary>¿Y si necesito cancelar?</summary>
+        <p>En SIMO preparamos cada taller con mimo, con plazas limitadas y materiales personalizados para cada participante. Si necesitas cancelar o cambiar tu reserva, estas son las condiciones:</p>
+        <p><strong>Con más de 15 días de antelación</strong><br>Puedes elegir entre recuperar el importe completo de tu reserva o trasladarla a otro taller con plazas disponibles.</p>
+        <p><strong>Entre 5 y 15 días de antelación</strong><br>No se devuelve el importe abonado, pero puedes cambiar tu asistencia a otra fecha disponible.</p>
+        <p><strong>Con menos de 5 días de antelación o si no asistes</strong><br>La plaza se pierde y no es posible solicitar un reembolso ni un cambio de fecha.</p>
+        <p><strong>Si SIMO cancela el taller</strong><br>Si una situación excepcional de fuerza mayor nos obliga a cancelar, podrás escoger entre el reembolso completo o la reprogramación de tu asistencia.</p>
+        <p><strong>Cómo cancelar o modificar tu reserva</strong><br>Escríbenos con tu nombre completo, la fecha del taller y el cambio que quieres solicitar:</p>
+        <p>Email: <a href="mailto:simobysimone@gmail.com">simobysimone@gmail.com</a><br>Teléfono: <a href="tel:+34681178228">+34 681 178 228</a></p>
+        <p>Atendemos las solicitudes en horario laboral y las confirmamos por escrito.</p>
+        <p>Al realizar tu reserva aceptas esta política, que puede estar sujeta a actualizaciones.</p>
+      </details>
     </section>
   </main>
 

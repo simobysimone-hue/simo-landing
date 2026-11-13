@@ -165,6 +165,27 @@ body::after {
 .included { margin-top: 45px; padding: 20px 24px; border: 1px dashed var(--silver); color: var(--muted); font-size: .95rem; }
 .included strong { color: var(--ink); }
 
+/* ---------- modalidades ---------- */
+.modes { display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px; margin-top: 45px; }
+.mode { border: 1px solid var(--line); border-radius: 6px; padding: 26px; background: var(--bg-2); display: flex; flex-direction: column; gap: 12px; }
+.mode-tag { margin: 0; color: var(--silver); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; }
+.mode h3 { font-family: var(--display); font-weight: 400; font-size: 2rem; text-transform: uppercase; margin: 0; line-height: 1.05; }
+.mode p { margin: 0; color: var(--muted); font-size: .95rem; }
+.mode-facts { list-style: none; margin: 4px 0; padding: 12px 0; display: flex; flex-wrap: wrap; gap: 8px 22px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); font-size: .9rem; }
+.mode-facts b { color: var(--ink); }
+.mode .mode-inc { font-size: .85rem; }
+.mode .btn { margin-top: auto; align-self: center; }
+.mode-picker { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.mode-picker label { cursor: pointer; }
+.mode-picker input { position: absolute; opacity: 0; pointer-events: none; }
+.mode-picker span { display: flex; flex-direction: column; gap: 4px; height: 100%; padding: 16px 18px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); transition: border-color .15s, background .15s; }
+.mode-picker b { font-family: var(--display); font-weight: 400; font-size: 1.2rem; text-transform: uppercase; letter-spacing: .03em; }
+.mode-picker small { color: var(--muted); font-size: .8rem; }
+.mode-picker label:hover span { border-color: var(--silver); }
+.mode-picker input:checked + span { border-color: var(--red); background: #2b1218; }
+.mode-picker input:checked + span small { color: var(--silver); }
+.mode-picker input:focus-visible + span { outline: 2px solid var(--silver); outline-offset: 2px; }
+
 /* ---------- gallery ---------- */
 .gallery-grid {
   display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
@@ -286,6 +307,8 @@ body::after {
   .footer-main { grid-template-columns: 1fr; gap: 30px; }
 }
 @media (max-width: 560px) {
+  .modes, .mode-picker { grid-template-columns: 1fr; }
+  .mode { padding: 20px; }
   .header { height: 68px; gap: 12px; }
   .wordmark { font-size: 2.1rem; }
   .wordmark img { height: 34px; }
@@ -305,3 +328,7 @@ body::after {
   html { scroll-behavior: auto; }
   * { animation: none !important; transition: none !important; }
 }
+
+/* botón de pago: el total nunca se parte */
+#pay-button { display: flex; flex-wrap: wrap; justify-content: center; gap: 0 .4em; }
+#pay-button span { white-space: nowrap; }

@@ -1,4 +1,4 @@
-import { stripeGet, json, ADMIN_PASSWORD } from './_shared.mjs';
+import { stripeGet, json, modalidadDePago, MODALIDADES } from './_shared.mjs';
 
 export default async (req) => {
   try {
@@ -23,6 +23,8 @@ export default async (req) => {
       data.push({
         id: piId,
         fecha: pi.metadata.fecha,
+        modalidad: MODALIDADES[modalidadDePago(pi.metadata)].nombre,
+        hora: pi.metadata.hora || '',
         personas: Number(pi.metadata.personas || 0),
         nombre: pi.metadata.nombre || '',
         email: pi.customer_email || pi.receipt_email || ch.billing_details?.email || '',
