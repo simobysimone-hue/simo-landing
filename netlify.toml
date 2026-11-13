@@ -3,6 +3,11 @@
   publish = "dist"
   functions = "netlify/functions"
 
+# El correo de contacto sale a propósito en la web (preguntas frecuentes),
+# así que no se trata como secreto. La contraseña y la clave de Stripe se siguen vigilando.
+[build.environment]
+  SECRETS_SCAN_OMIT_KEYS = "GMAIL_USER"
+
 [functions]
   node_bundler = "esbuild"
 

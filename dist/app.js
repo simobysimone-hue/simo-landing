@@ -1,16 +1,43 @@
 'use strict';
 
-/* ---- Config ---- */
-const PRICE_CENTS = 5499;          // 54,99 € por persona
-const CAPACITY = 8;                // plazas por fecha
-const WORKSHOP_DOWS = [5, 6];      // viernes(5) y sábados(6)
-const MIN_DATE = '2026-10-23';     // los talleres empiezan el 23 de octubre
-const WORKSHOP_HOURS = '17:00–20:00';
+/* ---- Config ----
+   Desde el 20/11/2026 hay dos modalidades (igual que en netlify/functions/_shared.mjs):
+   - Crea tu SIMO: sábados 10:00–14:00, 4 h, 74,99 €, 8 plazas.
+   - Customiza tu SIMO: viernes y sábados 17:00–19:30, 2 h 30 min, 54,99 €, 20 plazas.
+   Antes del 20/11: formato antiguo (Crea tu SIMO, viernes y sábados 17:00–20:00, 54,99 €, 8 plazas). */
+const MIN_DATE = '2026-10-23';
+const MAX_DATE = '2026-12-31';
+const CAMBIO = '2026-11-20';
+const SIN_TALLER = ['2026-12-25'];
+const CERRADAS = ['2026-10-31', '2026-11-13', '2026-11-14']; // cerradas a mano: salen como completas
+const MODALIDADES = {
+  crea: { nombre: 'Crea tu SIMO', leyenda: 'Crea tu SIMO: sábados de 10:00 a 14:00 · grupos de 8' },
+  customiza: { nombre: 'Customiza tu SIMO', leyenda: 'Customiza tu SIMO: viernes y sábados de 17:00 a 19:30 · grupos de 20' }
+};
+const PRECIO_BASE = { crea: 7499, customiza: 5499 };   // para el total antes de elegir día
+const CAPACIDAD_BASE = { crea: 8, customiza: 20 };
 const CONTACTO = {
   instagram: 'https://www.instagram.com/simo.bysimone/',
   tiktok: 'https://www.tiktok.com/@simone.eppi',
   email: ''                          // pendiente de confirmar
 };
+
+function sesionesDe(fecha) {
+  if (fecha < MIN_DATE || fecha > MAX_DATE || SIN_TALLER.includes(fecha)) return [];
+  const dow = new Date(fecha + 'T12:00:00').getDay();
+  if (fecha < CAMBIO) {
+    if (dow !== 5 && dow !== 6) return [];
+    return [{ modalidad: 'crea', hora: '17:00', horario: '17:00–20:00', precio: 5499, capacidad: 8 }];
+  }
+  const out = [];
+  if (dow === 6) out.push({ modalidad: 'crea', hora: '10:00', horario: '10:00–14:00', precio: 7499, capacidad: 8 });
+  if (dow === 5 || dow === 6) out.push({ modalidad: 'customiza', hora: '17:00', horario: '17:00–19:30', precio: 5499, capacidad: 20 });
+  return out;
+}
+function sesion(fecha, mod) { return sesionesDe(fecha).find(x => x.modalidad === mod) || null; }
+function entradaDe(fecha) {
+  return new Date(fecha + 'T12:00:00').getDay() === 6 ? 'C/ San Martín 5' : 'C/ Hileras 18';
+}
 
 const money = new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' });
 const fmtLong = new Intl.DateTimeFormat('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
@@ -31,9 +58,6 @@ document.querySelectorAll('#gallery-grid img').forEach(img => {
 });
 
 /* ---- Fechas ---- */
-function isWorkshopDate(y, m, d) {
-  return WORKSHOP_DOWS.includes(new Date(y, m, d).getDay());
-}
 function iso(y, m, d) {
   return `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
 }
@@ -42,13 +66,21 @@ const today = new Date(); today.setHours(0, 0, 0, 0);
 const nowY = today.getFullYear(), nowM = today.getMonth();
 let monthOffset = 0;
 let selectedDate = null;
-let availability = {}; // 'YYYY-MM-DD' -> plazas ya reservadas
+let modalidad = 'crea';
+let availability = {}; // 'YYYY-MM-DD|modalidad' -> plazas ya reservadas
+
+function libres(fecha, mod = modalidad) {
+  const ses = sesion(fecha, mod);
+  if (CERRADAS.includes(fecha)) return 0;
+  return ses ? Math.max(0, ses.capacidad - (availability[fecha + '|' + mod] || 0)) : 0;
+}
 
 const calendarDays = document.getElementById('calendar-days');
 const monthLabel = document.getElementById('month-label');
 const dateSelection = document.getElementById('date-selection');
 const sessionInput = document.getElementById('session-date');
 const spotsNote = document.getElementById('spots-note');
+const legendText = document.getElementById('legend-text');
 const monthNames = new Intl.DateTimeFormat('es-ES', { month: 'long', year: 'numeric' });
 
 async function fetchAvailability(from, to) {
@@ -56,9 +88,12 @@ async function fetchAvailability(from, to) {
     const res = await fetch(`/api/disponibilidad?desde=${from}&hasta=${to}`);
     if (!res.ok) return;
     const rows = await res.json();
-    rows.forEach(r => { availability[r.fecha] = r.reservadas; });
+    rows.forEach(r => {
+      const mod = r.modalidad || (r.fecha < CAMBIO ? 'crea' : 'customiza');
+      availability[r.fecha + '|' + mod] = r.reservadas;
+    });
     if (selectedDate) selectDate(selectedDate, true);
-    renderCalendar();
+    else renderCalendar();
   } catch { /* sin backend: todo disponible */ }
 }
 
@@ -80,17 +115,17 @@ function renderCalendar() {
 
   for (let d = 1; d <= daysInMonth; d++) {
     const key = iso(y, m, d);
-    const past = new Date(y, m, d) < today || key < MIN_DATE;
-    const workshop = isWorkshopDate(y, m, d) && !past;
-    const booked = availability[key] || 0;
-    const full = booked >= CAPACITY;
+    const past = new Date(y, m, d) < today;
+    const ses = sesion(key, modalidad);
+    const workshop = !!ses && !past;
+    const free = libres(key);
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.textContent = String(d);
     btn.dataset.date = key;
-    if (workshop && !full) {
+    if (workshop && free > 0) {
       btn.className = 'available';
-      btn.setAttribute('aria-label', `${fmtLong.format(new Date(y, m, d))}, ${WORKSHOP_HOURS}, ${CAPACITY - booked} plazas libres`);
+      btn.setAttribute('aria-label', `${fmtLong.format(new Date(y, m, d))}, ${ses.horario}, ${free} plazas libres`);
       if (selectedDate === key) btn.classList.add('selected');
       btn.addEventListener('click', () => selectDate(key));
     } else {
@@ -101,36 +136,61 @@ function renderCalendar() {
     calendarDays.append(btn);
   }
 
+  const lastOffset = (2026 - nowY) * 12 + 11 - nowM; // diciembre 2026 es el último mes con talleres
   document.getElementById('prev-month').disabled = monthOffset === 0;
-  document.getElementById('next-month').disabled = monthOffset === 3;
+  document.getElementById('next-month').disabled = monthOffset >= Math.max(0, lastOffset);
 }
 
 function selectDate(key, keepPeople = false) {
+  const ses = sesion(key, modalidad);
+  if (!ses || libres(key) <= 0) { clearDate(); return; }
   selectedDate = key;
   sessionInput.value = key;
   const [y, m, d] = key.split('-').map(Number);
-  const free = CAPACITY - (availability[key] || 0);
-  dateSelection.textContent = `${fmtLong.format(new Date(y, m - 1, d))} · ${WORKSHOP_HOURS} · Lugar: Casa de las Alajas, Hileras 18 · quedan ${free} ${free === 1 ? 'plaza' : 'plazas'}`;
-  if (!keepPeople) {
-    const people = document.getElementById('people');
-    const max = Math.max(1, Math.min(CAPACITY, free));
-    if (Number(people.value) > max) people.value = String(max);
-  }
+  const free = libres(key);
+  dateSelection.textContent = `${MODALIDADES[modalidad].nombre} · ${fmtLong.format(new Date(y, m - 1, d))} · ${ses.horario} · Casa de las Alajas, entrada por ${entradaDe(key)} · quedan ${free} ${free === 1 ? 'plaza' : 'plazas'}`;
+  fillPeople(free);
   spotsNote.hidden = false;
-  spotsNote.textContent = `Máximo ${free} ${free === 1 ? 'plaza' : 'plazas'} disponibles en esta fecha.`;
+  spotsNote.textContent = `Máximo ${free} ${free === 1 ? 'plaza' : 'plazas'} disponibles en esta sesión.`;
+  updateTotal();
+  renderCalendar();
+}
+
+function clearDate() {
+  selectedDate = null;
+  sessionInput.value = '';
+  dateSelection.textContent = 'Elige un día marcado en el calendario.';
+  spotsNote.hidden = true;
+  fillPeople(CAPACIDAD_BASE[modalidad]);
+  updateTotal();
   renderCalendar();
 }
 
 document.getElementById('prev-month').addEventListener('click', () => { if (monthOffset > 0) { monthOffset--; renderCalendar(); } });
-document.getElementById('next-month').addEventListener('click', () => { if (monthOffset < 3) { monthOffset++; renderCalendar(); } });
+document.getElementById('next-month').addEventListener('click', () => { monthOffset++; renderCalendar(); });
 
 /* ---- Personas + total ---- */
 const people = document.getElementById('people');
 const totalEl = document.getElementById('total');
 const payTotal = document.getElementById('pay-total');
 
+function fillPeople(max) {
+  const prev = Number(people.value) || 1;
+  people.replaceChildren();
+  for (let i = 1; i <= Math.max(1, max); i++) {
+    const o = document.createElement('option');
+    o.value = String(i);
+    o.textContent = `${i} ${i === 1 ? 'persona' : 'personas'}`;
+    people.append(o);
+  }
+  people.value = String(Math.min(prev, Math.max(1, max)));
+}
+function precioActual() {
+  const ses = selectedDate && sesion(selectedDate, modalidad);
+  return ses ? ses.precio : PRECIO_BASE[modalidad];
+}
 function updateTotal() {
-  const total = money.format(Number(people.value) * PRICE_CENTS / 100);
+  const total = money.format(Number(people.value || 1) * precioActual() / 100);
   totalEl.textContent = total;
   payTotal.textContent = total;
 }
@@ -139,12 +199,22 @@ document.getElementById('people-minus').addEventListener('click', () => {
   updateTotal();
 });
 document.getElementById('people-plus').addEventListener('click', () => {
-  const free = selectedDate ? Math.max(1, Math.min(CAPACITY, CAPACITY - (availability[selectedDate] || 0))) : CAPACITY;
-  people.value = String(Math.min(free, Number(people.value) + 1));
+  people.value = String(Math.min(people.options.length, Number(people.value) + 1));
   updateTotal();
 });
 people.addEventListener('change', updateTotal);
-updateTotal();
+
+/* ---- Modalidad ---- */
+function setModalidad(mod) {
+  modalidad = mod === 'customiza' ? 'customiza' : 'crea';
+  document.querySelectorAll('input[name="modalidad"]').forEach(r => { r.checked = r.value === modalidad; });
+  const aviso = modalidad === 'crea' && iso(nowY, nowM, today.getDate()) < CAMBIO ? ' · hasta el 19/11, viernes y sábados de 17:00 a 20:00' : '';
+  legendText.textContent = MODALIDADES[modalidad].leyenda + aviso;
+  if (selectedDate && sesion(selectedDate, modalidad) && libres(selectedDate) > 0) selectDate(selectedDate);
+  else clearDate();
+}
+document.querySelectorAll('input[name="modalidad"]').forEach(r => r.addEventListener('change', () => setModalidad(r.value)));
+document.querySelectorAll('[data-reservar]').forEach(a => a.addEventListener('click', () => setModalidad(a.dataset.reservar)));
 
 /* ---- Toast ---- */
 const toast = document.getElementById('toast');
@@ -169,7 +239,7 @@ document.getElementById('booking-form').addEventListener('submit', async event =
     const res = await fetch('/api/checkout', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ fecha: selectedDate, personas: nPeople, nombre: name, email })
+      body: JSON.stringify({ fecha: selectedDate, modalidad, personas: nPeople, nombre: name, email })
     });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(data.error || 'No se ha podido iniciar el pago.');
@@ -178,7 +248,7 @@ document.getElementById('booking-form').addEventListener('submit', async event =
     if (err.message === 'STRIPE_NO_CONFIGURADO') {
       showToast('El pago todavía no está activado: falta configurar la cuenta de Stripe.');
     } else if (err.message === 'SIN_PLAZAS') {
-      showToast('Esa fecha ya no tiene plazas suficientes. Elige otra.');
+      showToast('Esa sesión ya no tiene plazas suficientes. Elige otra.');
       renderCalendar();
     } else {
       showToast(err.message);
@@ -188,6 +258,5 @@ document.getElementById('booking-form').addEventListener('submit', async event =
 });
 
 /* ---- Init ---- */
-renderCalendar();
-const monthEnd = new Date(nowY, nowM + 4, 0);
-fetchAvailability(iso(nowY, nowM, 1), iso(monthEnd.getFullYear(), monthEnd.getMonth(), monthEnd.getDate()));
+setModalidad(new URLSearchParams(location.search).get('taller') === 'customiza' ? 'customiza' : 'crea');
+fetchAvailability(iso(nowY, nowM, 1), MAX_DATE);

@@ -39,7 +39,7 @@
       <div class="admin-table-wrap">
         <table class="admin-table">
           <thead>
-            <tr><th>Fecha taller</th><th>Plazas</th><th>Nombre</th><th>Email</th><th>Importe</th><th>Pagado</th><th>ID sesión</th></tr>
+            <tr><th>Fecha taller</th><th>Taller</th><th>Plazas</th><th>Nombre</th><th>Email</th><th>Importe</th><th>Pagado</th><th>ID sesión</th></tr>
           </thead>
           <tbody id="rows"></tbody>
         </table>
@@ -76,6 +76,7 @@
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td><strong>${fmtDate.format(new Date(r.fecha + 'T12:00:00'))}</strong></td>
+          <td>${r.modalidad || '—'}${r.hora ? ' · ' + r.hora : ''}</td>
           <td>${r.personas}</td>
           <td>${r.nombre || '—'}</td>
           <td><a href="mailto:${r.email}">${r.email}</a></td>

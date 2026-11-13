@@ -1,4 +1,4 @@
-import { json, stripeGet } from './_shared.mjs';
+import { json, stripeGet, modalidadDePago } from './_shared.mjs';
 
 export default async (req) => {
   try {
@@ -25,9 +25,13 @@ export default async (req) => {
       if (!fecha) continue;
       if (desde && fecha < desde) continue;
       if (hasta && fecha > hasta) continue;
-      rows[fecha] = (rows[fecha] || 0) + Number(pi.metadata?.personas || 0);
+      const key = fecha + '|' + modalidadDePago(pi.metadata);
+      rows[key] = (rows[key] || 0) + Number(pi.metadata?.personas || 0);
     }
-    return json(Object.entries(rows).map(([fecha, reservadas]) => ({ fecha, reservadas })));
+    return json(Object.entries(rows).map(([key, reservadas]) => {
+      const [fecha, modalidad] = key.split('|');
+      return { fecha, modalidad, reservadas };
+    }));
   } catch (e) {
     console.error('disponibilidad:', e.message);
     return json([], 500);
