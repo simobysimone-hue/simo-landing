@@ -226,6 +226,10 @@ function showToast(msg, ms = 6000) {
   toastTimer = setTimeout(() => { toast.hidden = true; }, ms);
 }
 
+/* ---- Origen de la visita (enlaces de anuncios con utm_*) ---- */
+const qs = new URLSearchParams(location.search);
+const ORIGEN = { origen: qs.get('utm_source') || '', campana: qs.get('utm_campaign') || '', anuncio: qs.get('utm_content') || '' };
+
 /* ---- Submit → Stripe Checkout ---- */
 const payButton = document.getElementById('pay-button');
 document.getElementById('booking-form').addEventListener('submit', async event => {
@@ -239,10 +243,11 @@ document.getElementById('booking-form').addEventListener('submit', async event =
     const res = await fetch('/api/checkout', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ fecha: selectedDate, modalidad, personas: nPeople, nombre: name, email })
+      body: JSON.stringify({ fecha: selectedDate, modalidad, personas: nPeople, nombre: name, email, ...ORIGEN })
     });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(data.error || 'No se ha podido iniciar el pago.');
+    if (window.simoTrack) window.simoTrack('InitiateCheckout', { value: nPeople * precioActual() / 100, currency: 'EUR', num_items: nPeople, content_ids: [modalidad], content_type: 'product' });
     window.location.href = data.url;
   } catch (err) {
     if (err.message === 'STRIPE_NO_CONFIGURADO') {

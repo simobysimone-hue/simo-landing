@@ -6,6 +6,12 @@ export default async (req) => {
     const body = await req.json().catch(() => ({}));
     const { fecha, personas, nombre, email } = body;
     const modalidad = body.modalidad === 'customiza' ? 'customiza' : 'crea';
+    // Origen de la reserva (utm_source / utm_campaign / utm_content del enlace). Solo minúsculas, números, _ y -.
+    const limpio = v => String(v || '').toLowerCase().replace(/[^a-z0-9_-]/g, '').slice(0, 60);
+    const origen = {};
+    if (limpio(body.origen)) origen.origen = limpio(body.origen);
+    if (limpio(body.campana)) origen.campana = limpio(body.campana);
+    if (limpio(body.anuncio)) origen.anuncio = limpio(body.anuncio);
     if (!isValidWorkshopDate(String(fecha || ''), modalidad)) return json({ error: 'FECHA_INVALIDA' }, 400);
     const ses = sesion(fecha, modalidad);
     if (!Number.isInteger(personas) || personas < 1 || personas > ses.capacidad) return json({ error: 'PERSONAS_INVALIDAS' }, 400);
@@ -30,12 +36,13 @@ export default async (req) => {
           product_data: { name: `Taller SIMO · ${MODALIDADES[modalidad].nombre} · ${fecha} · ${ses.horario} · ${lugarDe(fecha).replace('Casa de las Alajas · entrada por ', '')}` }
         }
       }],
-      metadata: { fecha, personas: String(personas), nombre: String(nombre).trim(), modalidad, hora: ses.hora },
+      metadata: { fecha, personas: String(personas), nombre: String(nombre).trim(), modalidad, hora: ses.hora, ...origen },
       payment_intent_data: {
         metadata: {
           fecha, personas: String(personas),
           nombre: String(nombre).trim(),
           modalidad, hora: ses.hora,
+          ...origen,
           // Marcador único para deduplicar tras reconfirmaciones:
           session_id: 'pending'  // se sobreescribe tras crear la sesión
         }

@@ -14,7 +14,9 @@ export default async (req) => {
     return json({
       estado: s.payment_status,
       fecha: s.metadata?.fecha || null,
-      personas: Number(s.metadata?.personas || 0)
+      personas: Number(s.metadata?.personas || 0),
+      modalidad: s.metadata?.modalidad || null,
+      importe: s.payment_status === 'paid' ? (s.amount_total || 0) / 100 : 0
     });
   } catch (e) {
     console.error('confirmar:', e.message);

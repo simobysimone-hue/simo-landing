@@ -332,3 +332,18 @@ body::after {
 /* botón de pago: el total nunca se parte */
 #pay-button { display: flex; flex-wrap: wrap; justify-content: center; gap: 0 .4em; }
 #pay-button span { white-space: nowrap; }
+
+/* ---------- aviso de cookies ---------- */
+.cookie-banner {
+  position: fixed; left: 16px; right: 16px; bottom: 16px; z-index: 90;
+  max-width: 640px; margin: 0 auto;
+  display: flex; flex-direction: column; gap: 14px;
+  padding: 18px 20px;
+  background: var(--bg-2); color: var(--ink);
+  border: 1px solid var(--line); border-radius: 6px;
+  box-shadow: 0 10px 40px rgba(0,0,0,.5);
+  font-size: .9rem; line-height: 1.5;
+}
+.cookie-banner a { text-decoration: underline; }
+.cookie-actions { display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; }
+.cookie-actions .btn { min-height: 44px; padding: 10px 22px; font-size: .95rem; }
