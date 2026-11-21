@@ -19,6 +19,7 @@
       <a class="btn btn-ghost" href="https://www.instagram.com/simo.bysimone/" target="_blank" rel="noopener">Ver Instagram</a>
     </div>
   </main>
+  <script src="consent.js"></script>
   <script>
     const id = new URLSearchParams(location.search).get('sesion');
     if (id) {
@@ -27,6 +28,15 @@
           const el = document.getElementById('detalle');
           el.textContent = `Reserva: ${d.fecha} · ${d.personas} ${d.personas === 1 ? 'persona' : 'personas'}`;
           el.hidden = false;
+        }
+        // Compra para el píxel de Meta (solo se envía si la persona ha aceptado las cookies).
+        // eventID = id de la sesión de Stripe: si recarga la página, Meta no la cuenta dos veces.
+        if (d.estado === 'paid' && d.importe) {
+          window.simoTrack('Purchase', {
+            value: d.importe, currency: 'EUR', num_items: d.personas,
+            content_name: d.modalidad === 'crea' ? 'Crea tu SIMO' : 'Customiza tu SIMO',
+            content_ids: [d.modalidad || 'taller'], content_type: 'product'
+          }, { eventID: id });
         }
       }).catch(() => {});
     }

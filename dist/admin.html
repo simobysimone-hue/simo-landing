@@ -39,7 +39,7 @@
       <div class="admin-table-wrap">
         <table class="admin-table">
           <thead>
-            <tr><th>Fecha taller</th><th>Taller</th><th>Plazas</th><th>Nombre</th><th>Email</th><th>Importe</th><th>Pagado</th><th>ID sesión</th></tr>
+            <tr><th>Fecha taller</th><th>Taller</th><th>Plazas</th><th>Nombre</th><th>Email</th><th>Importe</th><th>Origen</th><th>Pagado</th><th>ID sesión</th></tr>
           </thead>
           <tbody id="rows"></tbody>
         </table>
@@ -81,6 +81,7 @@
           <td>${r.nombre || '—'}</td>
           <td><a href="mailto:${r.email}">${r.email}</a></td>
           <td>${money.format(r.importe)}</td>
+          <td>${r.origen || '—'}</td>
           <td>${fmtTime.format(new Date(r.creado))}</td>
           <td><code>${r.id}</code></td>
         `;

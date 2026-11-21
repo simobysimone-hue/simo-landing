@@ -29,6 +29,7 @@ export default async (req) => {
         nombre: pi.metadata.nombre || '',
         email: pi.customer_email || pi.receipt_email || ch.billing_details?.email || '',
         importe: ch.amount / 100,
+        origen: [pi.metadata.origen, pi.metadata.campana, pi.metadata.anuncio].filter(Boolean).join(' · '),
         creado: created.toISOString(),
         cuando: created.toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' })
       });
