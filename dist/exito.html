@@ -7,6 +7,8 @@
   <title>SIMO · ¡Plaza confirmada!</title>
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Caveat:wght@400;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <!-- Umami: estadísticas sin cookies (no necesita consentimiento) -->
+  <script defer src="https://cloud.umami.is/script.js" data-website-id="961b1e2b-0403-421f-922b-cc89f5d497ac" data-domains="simoby.netlify.app"></script>
 </head>
 <body>
   <main class="result-page">
@@ -31,6 +33,9 @@
         }
         // Compra para el píxel de Meta (solo se envía si la persona ha aceptado las cookies).
         // eventID = id de la sesión de Stripe: si recarga la página, Meta no la cuenta dos veces.
+        if (d.estado === 'paid' && d.importe && window.umami) {
+          window.umami.track('Compra', { modalidad: d.modalidad || 'taller', personas: d.personas, importe: d.importe });
+        }
         if (d.estado === 'paid' && d.importe) {
           window.simoTrack('Purchase', {
             value: d.importe, currency: 'EUR', num_items: d.personas,

@@ -247,6 +247,7 @@ document.getElementById('booking-form').addEventListener('submit', async event =
     });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(data.error || 'No se ha podido iniciar el pago.');
+    if (window.umami) window.umami.track('Reservar y pagar', { modalidad, personas: nPeople, importe: nPeople * precioActual() / 100 });
     if (window.simoTrack) window.simoTrack('InitiateCheckout', { value: nPeople * precioActual() / 100, currency: 'EUR', num_items: nPeople, content_ids: [modalidad], content_type: 'product' });
     window.location.href = data.url;
   } catch (err) {
